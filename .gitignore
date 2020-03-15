@@ -12,5 +12,10 @@ venv
 ehthumbs.db
 Thumbs.db
 
-#Front end files
+#Front end files and foladers
 /frontend/node_modules
+
+#Backend files and folders
+/backend/Lib
+/backend/Scripts
+/backend/pyvenv.cfg
