@@ -101,7 +101,21 @@ def create_app(test_config=None):
       'success': 200
     })
 
+  @app.route('/questions/<int:id>', methods=['DELETE'])
+  def delete_question(id):
+    question = Question.query.get(id)
 
+    if question is None:
+      abort(404)
+
+    try:
+      question.delete() 
+      return jsonify({
+      'success': 200
+      })
+    except:
+      abort(422)
+ 
   '''
   @TODO: 
   Create an endpoint to handle GET requests for questions, 
