@@ -115,7 +115,22 @@ def create_app(test_config=None):
       })
     except:
       abort(422)
- 
+
+  @app.route('/questions/<searchTerm>', methods=['POST'])
+  def search_questions(searchTerm):
+    questions = Question.query.filter(Question.question.ilike(f'%{searchTerm}%')).all()
+    paginated_questions = paginate_questions(request,questions)
+    
+    if len(paginated_questions) == 0:
+      abort(404)
+
+    return jsonify({
+      'success': 200,
+      'questions': paginated_questions,
+      'totalQuestions': len(questions),
+      'currentCategory': ''
+    })
+
   '''
   @TODO: 
   Create an endpoint to handle GET requests for questions, 
