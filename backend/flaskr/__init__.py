@@ -55,22 +55,52 @@ def create_app(test_config=None):
     if len(paginated_questions) == 0:
       abort(404)
     return jsonify({
+      'success': 200,
       'questions': paginated_questions,
       'totalQuestions': len(Question.query.all()),
       'categories': [c.type for c in categories],
-      'currentCategory': '' 
+      'currentCategory': ''
     })
 
   @app.route('/categories/<int:id>/questions')
   def get_questions_by_category(id):
-    questions = Question.query.join(Category, Question.category==id).all()
+    questions = Question.query.join(Category, Question.category==id+1).all()
     paginated_questions = paginate_questions(request,questions)
 
     return jsonify({
+      'success': 200,
       'questions': paginated_questions,
       'totalQuestions': len(questions),
-      'currentCategory': id
+      'currentCategory': id+1
     })
+
+  @app.route('/add')
+  def get_categories():
+
+    categories = Category.query.all()
+    
+    return jsonify({
+      'success': 200,
+      'categories': [c.type for c in categories],
+    })
+
+  @app.route('/questions', methods=['POST'])
+  def post_new_question():
+    body = request.get_json()
+
+    new_question = body.get('question', None)
+    new_answer = body.get('answer', None)
+    new_difficulty = body.get('difficulty', None)
+    new_category = body.get('category', None)
+
+    question = Question(question = new_question, answer = new_answer, difficulty= new_difficulty, category= new_category)
+
+    question.insert()
+
+    return jsonify({
+      'success': 200
+    })
+
 
   '''
   @TODO: 
