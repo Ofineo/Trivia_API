@@ -8,6 +8,16 @@ from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
+def paginate_questions(request, selection):
+  page = request.args.get('page', 1, type=int)
+  start =  (page - 1) * QUESTIONS_PER_PAGE
+  end = start + QUESTIONS_PER_PAGE
+
+  questions = [question.format() for question in selection]
+  paginated_questions = questions[start:end]
+
+  return paginated_questions
+
 def create_app(test_config=None):
   # create and configure the app
   app = Flask(__name__)
@@ -23,7 +33,7 @@ def create_app(test_config=None):
   '''
   @TODO: Use the after_request decorator to set Access-Control-Allow
   '''
-  @after.request
+  @app.after_request
   def after_request(response):
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
     response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,PUT,POST,DELETE,OPTIONS')
@@ -35,6 +45,27 @@ def create_app(test_config=None):
   Create an endpoint to handle GET requests 
   for all available categories.
   '''
+  @app.route('/questions')
+  def get_questions():
+    questions = Question.query.order_by(Question.id).all()
+    paginated_questions = paginate_questions(request,questions)
+
+    categories = Category.query.all()
+    test = [c.type for c in categories]
+    print('----------------')
+    print(test)
+
+    
+    if len(paginated_questions) == 0:
+      abort(404)
+    return jsonify({
+      'questions': paginated_questions,
+      'totalQuestions': len(Question.query.all()),
+      'categories': [c.type for c in categories],
+      'currentCategory': '' 
+    })
+   
+
 
 
   '''
