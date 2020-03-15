@@ -84,16 +84,16 @@ def create_app(test_config=None):
       'categories': [c.type for c in categories],
     })
 
-  @app.route('/questions', methods=['POST'])
+  @app.route('/add', methods=['POST'])
   def post_new_question():
     body = request.get_json()
 
     new_question = body.get('question', None)
     new_answer = body.get('answer', None)
     new_difficulty = body.get('difficulty', None)
-    new_category = body.get('category', None)
+    new_category = int(body.get('category', None))
 
-    question = Question(question = new_question, answer = new_answer, difficulty= new_difficulty, category= new_category)
+    question = Question(question = new_question, answer = new_answer, difficulty= new_difficulty, category= str(new_category+1))
 
     question.insert()
 
