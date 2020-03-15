@@ -51,10 +51,6 @@ def create_app(test_config=None):
     paginated_questions = paginate_questions(request,questions)
 
     categories = Category.query.all()
-    test = [c.type for c in categories]
-    print('----------------')
-    print(test)
-
     
     if len(paginated_questions) == 0:
       abort(404)
@@ -64,9 +60,17 @@ def create_app(test_config=None):
       'categories': [c.type for c in categories],
       'currentCategory': '' 
     })
-   
 
+  @app.route('/categories/<int:id>/questions')
+  def get_questions_by_category(id):
+    questions = Question.query.join(Category, Question.category==id).all()
+    paginated_questions = paginate_questions(request,questions)
 
+    return jsonify({
+      'questions': paginated_questions,
+      'totalQuestions': len(questions),
+      'currentCategory': id
+    })
 
   '''
   @TODO: 
