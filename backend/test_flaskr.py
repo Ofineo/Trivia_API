@@ -19,6 +19,13 @@ class TriviaTestCase(unittest.TestCase):
         self.database_path = "postgres://{}/{}".format('localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
 
+        self.new_question = {
+            'question':'Who rules the world?', 
+            'answer': 'Satan 1 John 5:19', 
+            'difficulty': '5', 
+            'category': '4' 
+        }
+
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -36,11 +43,21 @@ class TriviaTestCase(unittest.TestCase):
 
         categories = Category.query.all()
 
+        self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(len(data['questions']))
         self.assertTrue(data['totalQuestions'])
         self.assertEqual(data['categories'], [category.type for category in categories])
 
+    def test_get_questions_by_category(self):
+        res = self.client().get('/categories/4/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(len(data['questions']))
+        self.assertTrue(data['totalQuestions'])
+        self.assertEqual(data['currentCategory'], 4+1)
 
     """
     TODO

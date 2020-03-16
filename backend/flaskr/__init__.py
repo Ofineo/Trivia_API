@@ -98,7 +98,8 @@ def create_app(test_config=None):
     question.insert()
 
     return jsonify({
-      'success': True
+      'success': True,
+      'question': question.format()
     })
 
   @app.route('/questions/<int:id>', methods=['DELETE'])
