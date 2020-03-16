@@ -55,7 +55,7 @@ def create_app(test_config=None):
     if len(paginated_questions) == 0:
       abort(404)
     return jsonify({
-      'success': 200,
+      'success': True,
       'questions': paginated_questions,
       'totalQuestions': len(Question.query.all()),
       'categories': [c.type for c in categories],
@@ -68,7 +68,7 @@ def create_app(test_config=None):
     paginated_questions = paginate_questions(request,questions)
 
     return jsonify({
-      'success': 200,
+      'success': True,
       'questions': paginated_questions,
       'totalQuestions': len(questions),
       'currentCategory': id+1
@@ -80,7 +80,7 @@ def create_app(test_config=None):
     categories = Category.query.all()
     
     return jsonify({
-      'success': 200,
+      'success': True,
       'categories': [c.type for c in categories],
     })
 
@@ -98,7 +98,7 @@ def create_app(test_config=None):
     question.insert()
 
     return jsonify({
-      'success': 200
+      'success': True
     })
 
   @app.route('/questions/<int:id>', methods=['DELETE'])
@@ -111,7 +111,7 @@ def create_app(test_config=None):
     try:
       question.delete() 
       return jsonify({
-      'success': 200
+      'success': True
       })
     except:
       abort(422)
@@ -125,7 +125,7 @@ def create_app(test_config=None):
       abort(404)
 
     return jsonify({
-      'success': 200,
+      'success': True,
       'questions': paginated_questions,
       'totalQuestions': len(questions),
       'currentCategory': ''
@@ -225,7 +225,7 @@ def create_app(test_config=None):
       "message": "bad request"
       }), 400
 
-   @app.errorhandler(405)
+  @app.errorhandler(405)
   def method_not_allowed(error):
     return jsonify({
       "success": False, 

@@ -12,6 +12,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def setUp(self):
         """Define test variables and initialize app."""
+        
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "trivia_test"
@@ -28,6 +29,18 @@ class TriviaTestCase(unittest.TestCase):
     def tearDown(self):
         """Executed after reach test"""
         pass
+    
+    def test_get_all_books(self):
+        res = self.client().get('/questions')
+        data = json.loads(res.data)
+
+        categories = Category.query.all()
+
+        self.assertEqual(data['success'], True)
+        self.assertTrue(len(data['questions']))
+        self.assertTrue(data['totalQuestions'])
+        self.assertEqual(data['categories'], [category.type for category in categories])
+
 
     """
     TODO
