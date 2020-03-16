@@ -59,6 +59,15 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['totalQuestions'])
         self.assertEqual(data['currentCategory'], 4+1)
 
+    def test_add_question(self):
+        res = self.client().post('/add', json=self.new_question)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['question'])
+        
+
     """
     TODO
     Write at least one test for each test for successful operation and for expected errors.
