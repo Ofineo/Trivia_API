@@ -84,7 +84,7 @@ class TriviaTestCase(unittest.TestCase):
         
         self.assertFalse(question.id in questions)
 
-     def test_search(self):
+    def test_search(self):
 
         search_term = 'man'
 
@@ -119,14 +119,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], "method not allowed")
 
-     def test_422_add_question_fails(self):
+    def test_422_add_question_fails(self):
         res = self.client().post('/add')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], "unprocessable")
-        
+
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
