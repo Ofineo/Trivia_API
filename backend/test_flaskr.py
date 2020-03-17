@@ -35,6 +35,10 @@ class TriviaTestCase(unittest.TestCase):
     
     def tearDown(self):
         """Executed after reach test"""
+        question = Question.query.filter(Question.answer=='Satan 1 John 5:19').one_or_none()
+        if question:
+            res = self.client().delete(f'/questions/{question.id}')
+
         pass
     
     def test_get_all_books(self):
@@ -66,12 +70,19 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(data['question'])
-        
 
-    """
-    TODO
-    Write at least one test for each test for successful operation and for expected errors.
-    """
+    def test_delete_question(self):
+
+        self.client().post('/add', json=self.new_question)
+
+        question = Question.query.filter(Question.answer=='Satan 1 John 5:19').one_or_none()
+
+        res = self.client().delete(f'/questions/{question.id}')
+        data = json.loads(res.data)
+        
+        questions = Question.query.all()
+        
+        self.assertFalse(question.id in questions)
 
 
 # Make the tests conveniently executable

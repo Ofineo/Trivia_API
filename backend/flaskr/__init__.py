@@ -64,15 +64,22 @@ def create_app(test_config=None):
 
   @app.route('/categories/<int:id>/questions')
   def get_questions_by_category(id):
-    questions = Question.query.join(Category, Question.category==id+1).all()
-    paginated_questions = paginate_questions(request,questions)
 
-    return jsonify({
-      'success': True,
-      'questions': paginated_questions,
-      'totalQuestions': len(questions),
-      'currentCategory': id+1
-    })
+    categories = Category.query.all()
+    
+    if id <= len(categories):
+      questions = Question.query.join(Category, Question.category==id+1).all()
+      paginated_questions = paginate_questions(request,questions)
+
+      return jsonify({
+        'success': True,
+        'questions': paginated_questions,
+        'totalQuestions': len(questions),
+        'currentCategory': id+1
+      })
+    else:
+      abort(400)
+
 
   @app.route('/add')
   def get_categories():
@@ -86,21 +93,25 @@ def create_app(test_config=None):
 
   @app.route('/add', methods=['POST'])
   def post_new_question():
-    body = request.get_json()
 
-    new_question = body.get('question', None)
-    new_answer = body.get('answer', None)
-    new_difficulty = body.get('difficulty', None)
-    new_category = int(body.get('category', None))
+    try:
+      body = request.get_json()
 
-    question = Question(question = new_question, answer = new_answer, difficulty= new_difficulty, category= str(new_category+1))
+      new_question = body.get('question', None)
+      new_answer = body.get('answer', None)
+      new_difficulty = body.get('difficulty', None)
+      new_category = int(body.get('category', None))
 
-    question.insert()
+      question = Question(question = new_question, answer = new_answer, difficulty= new_difficulty, category= str(new_category+1))
 
-    return jsonify({
-      'success': True,
-      'question': question.format()
-    })
+      question.insert()
+
+      return jsonify({
+        'success': True,
+        'question': question.format()
+      })
+    except:
+      abort(422)
 
   @app.route('/questions/<int:id>', methods=['DELETE'])
   def delete_question(id):
@@ -124,7 +135,7 @@ def create_app(test_config=None):
     
     if len(paginated_questions) == 0:
       abort(404)
-
+    
     return jsonify({
       'success': True,
       'questions': paginated_questions,
