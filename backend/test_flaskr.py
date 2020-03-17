@@ -103,7 +103,14 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'bad request')
     
+    def test_404_delete_nonexistent_question(self):
+        res = self.client().delete(f'/questions/9999')
+        data = json.loads(res.data)
 
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], "resource not found")
+        
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
