@@ -110,6 +110,15 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], "resource not found")
+
+    def test_405_put_new_question(self):
+        res = self.client().put('/add', json=self.new_question)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], "method not allowed")
+
         
 # Make the tests conveniently executable
 if __name__ == "__main__":
