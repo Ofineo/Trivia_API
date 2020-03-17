@@ -94,7 +94,16 @@ class TriviaTestCase(unittest.TestCase):
         questions = Question.query.filter(Question.question.ilike(f'%{search_term}%')).count()
         
         self.assertEqual(data['totalQuestions'],questions)
-        
+
+    def test_400_failed_get_questions_by_category(self):
+        res = self.client().get('/categories/1000/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'bad request')
+    
+
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
