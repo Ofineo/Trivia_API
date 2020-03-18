@@ -8,10 +8,10 @@ from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
-def paginate_questions(request, selection):
+def paginate_questions(request, selection, pagination=QUESTIONS_PER_PAGE):
   page = request.args.get('page', 1, type=int)
-  start =  (page - 1) * QUESTIONS_PER_PAGE
-  end = start + QUESTIONS_PER_PAGE
+  start =  (page - 1) * pagination
+  end = start + pagination
 
   questions = [question.format() for question in selection]
   paginated_questions = questions[start:end]
@@ -67,7 +67,7 @@ def create_app(test_config=None):
       abort(400)
 
 
-  @app.route('/add')
+  @app.route('/categories')
   def get_categories():
 
     categories = Category.query.all()
@@ -128,6 +128,31 @@ def create_app(test_config=None):
       'totalQuestions': len(questions),
       'currentCategory': ''
     })
+
+  @app.route('/quizzes', methods=['POST'])
+  def play_game():
+    body = request.get_json()
+    category = int(body.get('quiz_category'))+1
+
+    previous_questions = body.get('previous_questions')
+
+    if len(previous_questions) == len(Question.query.join(Category, Question.category==category).all()):
+      return jsonify({
+      'success': True,
+      'question': False
+      })
+    elif len(previous_questions):
+      questions = Question.query.join(Category, Question.category==category).filter(~Question.id.in_(previous_questions)).first()
+    else:
+      questions = Question.query.join(Category, Question.category==category).first()
+    
+    paginated_questions = questions.format()
+  
+    return jsonify({
+      'success': True,
+      'question': paginated_questions
+    })
+
  
   @app.errorhandler(404)
   def not_found(error):
@@ -162,5 +187,3 @@ def create_app(test_config=None):
       }), 405
   
   return app
-
-    
