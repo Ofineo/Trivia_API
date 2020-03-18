@@ -82,7 +82,7 @@ python test_flaskr.py
 > Base URL `Localhost:5000`
 
 URI|Method|Explanation|Return example|Curl example
----|---|---|---
+--- | --- | --- | ---| ---
 `'/questions'`|GET| Fetches all the questions as a List and paginates them in a default quantity of 10 per page| `{'success': <Bool>, 'questions': [<obj>], 'totalQuestions': <int>, 'categories': [<int>], 'currentCategory': 'not used'}`|`curl http://127.0.0.1:5000/questions`
 `/categories/<int:id>/questions`|GET| Fetches all the questions as a List for a specific category and paginates them in a default quantity of 10 per page|`{'success': <Bool>, 'questions': [<obj>], 'totalQuestions': <int>, 'categories': [<int>], 'currentCategory': <int>}`|`curl http://127.0.0.1:5000/categories/2/questions`
 `/categories`|GET|Fetches a List with all the categories as integers|`{'success': <Bool>, 'categories': [<int>]}`|`curl http://127.0.0.1:5000/categories -X GET`
@@ -90,6 +90,3 @@ URI|Method|Explanation|Return example|Curl example
 `'/questions/<int:id>'`|DELETE|Deletes teh selected questions by id|`{'success': True}`|`curl http://127.0.0.1:5000/questions/2 -X DELETE`
 `'/questions/<searchTerm>'`|POST|Searches for a string on all the questions. small case or upper case is not considered|`{'success': <Bool>, 'questions': [<obj>], 'totalQuestions': <str>, 'currentCategory': not used}`|`curl http://127.0.0.1:5000/questions\the -X POST`
 `'/quizzes'`|POST|Posts the prior questions if any. Fetches one question from a category that is not among the prior questions.|`{'success': <Bool>, 'question': <obj>}`|`curl http://127.0.0.1:5000/quizzes -X POST -H"Content-Type: application/json" -d"{'previous_questions':[<int>], 'quiz_category': <int>}"`
-
-
-
