@@ -74,7 +74,7 @@ def create_app(test_config=None):
     
     return jsonify({
       'success': True,
-      'categories': [c.type for c in categories],
+      'categories': [c.type for c in categories]
     })
 
   @app.route('/add', methods=['POST'])

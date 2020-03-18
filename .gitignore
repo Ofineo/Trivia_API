@@ -19,3 +19,6 @@ Thumbs.db
 /backend/Lib
 /backend/Scripts
 /backend/pyvenv.cfg
+
+#Virtual enviroment
+/envtrivia
