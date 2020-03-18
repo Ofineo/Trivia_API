@@ -95,7 +95,12 @@ class TriviaTestCase(unittest.TestCase):
         
         self.assertEqual(data['totalQuestions'],questions)
 
+    def test_quizz(self):
+        res = self.client().post('/quizzes', json={'previous_questions':[], 'quiz_category':'2'})
+        data = json.loads(res.data)
 
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['question'])
 
     def test_400_failed_get_questions_by_category(self):
         res = self.client().get('/categories/1000/questions')
